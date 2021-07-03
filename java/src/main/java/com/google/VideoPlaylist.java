@@ -29,7 +29,7 @@ class VideoPlaylist {
         return new ArrayList<>(this.searchPlayList);
     }
     public List<Video> getVideosFromPlList(String playlistName){
-        return new ArrayList<>(this.playListVidoes.get(playlistName));
+        return new ArrayList<>(playListVidoes.get(playlistName));
     }
 
     public void addVideoToPlaylist(String playListName, String videoId) {
@@ -37,7 +37,7 @@ class VideoPlaylist {
         playListVidoes.remove(playListName, null);
     }
     public void removeVideo(String playListName, String videoId) {
-        this.playListVidoes.remove(playListName, videoLibrary.getVideo(videoId));
+        playListVidoes.remove(playListName, videoLibrary.getVideo(videoId));
         if(!playListVidoes.containsKey(playListName)) playListVidoes.put(playListName, null);
     }
 
