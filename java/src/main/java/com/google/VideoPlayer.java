@@ -2,6 +2,7 @@ package com.google;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class VideoPlayer {
 
@@ -234,11 +235,101 @@ public class VideoPlayer {
   }
 
   public void searchVideos(String searchTerm) {
-    System.out.println("searchVideos needs implementation");
+    ArrayList<Video> matchVideo = new ArrayList<>();
+    int noOfMatch = 0;
+    if(videoLibrary.getVideos().stream().anyMatch(a->a.getTitle().toLowerCase().contains(searchTerm))) {
+        System.out.println("Here are the results for " + searchTerm +":" );
+        List<Video> lexVideo = videoLibrary.getVideos();
+        // lex sort
+        for (int i = 0; i < lexVideo.size()-1; ++i) {
+          for (int j = i + 1; j < lexVideo.size(); ++j) {
+            if (lexVideo.get(i).getTitle().compareToIgnoreCase(lexVideo.get(j).getTitle()) > 0) {
+                Video temp = lexVideo.get(i);
+                lexVideo.set(i, lexVideo.get(j));
+                lexVideo.set(j, temp);
+            }
+          }
+      }
+        for (Video vid : lexVideo) {
+          String vidTitle  = vid.getTitle();
+          if (vidTitle.toLowerCase().contains(searchTerm)) {
+              ++noOfMatch;
+              matchVideo.add(vid);
+              if (vid.getTags().isEmpty()) {
+                System.out.println(noOfMatch + ") " + vid.getTitle() +" (" + vid.getVideoId() +") []");
+              } else {
+                System.out.println(noOfMatch + ") " + vid.getTitle() +" (" + vid.getVideoId() +") " + vid.getTags().toString().replace(",", ""));
+              }
+            }
+              
+        }
+            System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
+            System.out.println("If your answer is not a valid number, we will assume it's a no.");
+            Scanner scanner = new Scanner(System.in);
+            if (scanner.hasNext()){
+            var input = scanner.next();
+            int val = 0;
+            try {
+            val = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+            }
+        
+            
+            if(val != 0 && val <= matchVideo.size()) playVideo(matchVideo.get(val-1).getVideoId());
+          }
+          scanner.reset();
+          } else {
+            System.out.println("No search results for " + searchTerm);
+          }
   }
 
   public void searchVideosWithTag(String videoTag) {
-    System.out.println("searchVideosWithTag needs implementation");
+    ArrayList<Video> matchVideo = new ArrayList<>();
+    int noOfMatch = 0;
+    if(videoLibrary.getVideos().stream().filter(a->!a.getTags().isEmpty()).anyMatch(a->a.getTags().contains(videoTag))) {
+        System.out.println("Here are the results for " + videoTag +":" );
+        List<Video> lexVideo = videoLibrary.getVideos();
+        // lex sort
+        for (int i = 0; i < lexVideo.size()-1; ++i) {
+          for (int j = i + 1; j < lexVideo.size(); ++j) {
+            if (lexVideo.get(i).getTitle().compareToIgnoreCase(lexVideo.get(j).getTitle()) > 0) {
+                Video temp = lexVideo.get(i);
+                lexVideo.set(i, lexVideo.get(j));
+                lexVideo.set(j, temp);
+            }
+          }
+      }
+        for (Video vid : lexVideo) {
+          List<String> vidTag  = vid.getTags();
+          if (!vidTag.isEmpty() && vidTag.stream().anyMatch(a->a.equalsIgnoreCase(videoTag))) {
+              ++noOfMatch;
+              matchVideo.add(vid);
+              if (vid.getTags().isEmpty()) {
+                System.out.println(noOfMatch + ") " + vid.getTitle() +" (" + vid.getVideoId() +") []");
+              } else {
+                System.out.println(noOfMatch + ") " + vid.getTitle() +" (" + vid.getVideoId() +") " + vid.getTags().toString().replace(",", ""));
+              }
+            }
+              
+        }
+            System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
+            System.out.println("If your answer is not a valid number, we will assume it's a no.");
+            Scanner scanner = new Scanner(System.in);
+            if (scanner.hasNext()){
+            var input = scanner.next();
+            int val = 0;
+            try {
+            val = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+            }
+        
+            
+            if(val != 0 && val <= matchVideo.size()) playVideo(matchVideo.get(val-1).getVideoId());
+          }
+          scanner.reset();
+          } else {
+            System.out.println("No search results for " + videoTag);
+          }
   }
 
   public void flagVideo(String videoId) {
